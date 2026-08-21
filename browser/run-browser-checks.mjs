@@ -359,6 +359,10 @@ async function inspectCrossBrowser(page, project, route, viewport, browserName) 
   page.on("pageerror", (error) => pageErrors.push(error.message));
   const url = new URL(route.replace(/^\//, ""), project.baseUrl).href;
   const response = await page.goto(url, { waitUntil: "domcontentloaded", timeout: 30000 });
+  // WebKit can expose the DOM before deferred styles and navigation setup have
+  // finished. Wait for the complete page before testing real interactions so a
+  // slow first engine start is not reported as a broken mobile menu.
+  await page.waitForLoadState("load", { timeout: 10000 });
   await page.waitForTimeout(300);
   if (!response || response.status() >= 400) {
     add(project.id, "cross-browser", "error", `${browserName}/${viewport.name}: HTTP ${response?.status() ?? "no response"}`, url, route);
@@ -380,7 +384,8 @@ async function inspectCrossBrowser(page, project, route, viewport, browserName) 
   if (viewport.isMobile) {
     const toggle = page.locator("[data-mobile-menu-button], [data-menu-button], [data-nav-toggle], .nav-toggle, .menu-toggle").first();
     if (await toggle.count() && await toggle.isVisible()) {
-      await toggle.click({ timeout: 3000 });
+      await toggle.scrollIntoViewIfNeeded();
+      await toggle.click({ timeout: 8000 });
       await page.waitForTimeout(100);
       const expanded = await toggle.getAttribute("aria-expanded");
       const targetId = await toggle.getAttribute("aria-controls");
@@ -450,6 +455,8 @@ if (input.mode === "full") {
         for (const viewport of smokeViewports) {
           const context = await smokeBrowser.newContext({
             viewport: { width: viewport.width, height: viewport.height },
+            isMobile: viewport.isMobile,
+            hasTouch: viewport.hasTouch,
             colorScheme: "light",
             locale: "de-DE",
             timezoneId: "Europe/Berlin",
