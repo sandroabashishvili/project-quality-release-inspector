@@ -1,0 +1,15 @@
+.venv/
+node_modules/
+artifacts/
+reports/
+history/
+config/projects.local.json
+config/operations.local.json
+*.sqlite3
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+.scan.lock

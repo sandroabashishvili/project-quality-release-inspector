@@ -1,0 +1,54 @@
+{
+  "defaults": {
+    "release_rules": {
+      "block_priorities": ["critical", "high"],
+      "block_severities": ["error"],
+      "critical_always_blocks": true
+    }
+  },
+  "projects": [
+    {
+      "id": "company-site",
+      "name": "Company Website",
+      "path": "../../company-site",
+      "profile": "static_website",
+      "live_url": "https://example.com/",
+      "browser_paths": ["/", "/contact/"],
+      "visual_paths": ["/"],
+      "lighthouse_path": "/",
+      "required_files": ["index.html", "robots.txt", "sitemap.xml", "README.md"],
+      "ignored_files": ["vendor/**"],
+      "cross_browser_paths": ["/"],
+      "external_link_limit": 25,
+      "automation_paths": ["scripts/publish.sh", ".github/workflows/deploy.yml"],
+      "forbidden_strings": ["https://retired.example.invalid"],
+      "generator_contracts": [
+        {
+          "name": "homepage renderer",
+          "command": ["python3", "scripts/render_probe.py"],
+          "expected_strings": ["https://example.com/"],
+          "forbidden_strings": ["https://retired.example.invalid"]
+        }
+      ]
+    },
+    {
+      "id": "crm",
+      "name": "Example Flask CRM",
+      "path": "../../crm",
+      "profile": "flask_web_app",
+      "browser_paths": ["/", "/dashboard"],
+      "python_paths": ["app", "tests"],
+      "start_command": [".venv/bin/python", "app/main.py"],
+      "start_env": {
+        "APP_DATABASE": "{artifacts_dir}/browser-test.sqlite3",
+        "APP_SECRET": "quality-system-test-only"
+      },
+      "test_command": [".venv/bin/python", "-m", "pytest", "-q"],
+      "severity_overrides": {
+        "accessibility": {
+          "priority": "high"
+        }
+      }
+    }
+  ]
+}

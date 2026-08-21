@@ -1,0 +1,8 @@
+{
+  "forbidden_strings": [
+    "retired.example.invalid"
+  ],
+  "required_cron_patterns": [
+    "example_module"
+  ]
+}

@@ -1,0 +1,9 @@
+beautifulsoup4==4.13.4
+bandit==1.8.6
+defusedxml==0.7.1
+pip-audit==2.9.0
+pytest==9.1.1
+PyYAML==6.0.2
+radon==6.0.1
+ruff==0.12.8
+vulture==2.14

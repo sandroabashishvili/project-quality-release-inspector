@@ -1,0 +1,23 @@
+{
+  "name": "project-quality-release-inspector",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Config-driven multi-project quality, regression and release validation",
+  "scripts": {
+    "test": "node --test browser/tests/*.test.mjs",
+    "browser-check": "node browser/run-browser-checks.mjs",
+    "browser-engines": "node browser/verify-engines.mjs",
+    "lighthouse": "node browser/run-lighthouse.mjs"
+  },
+  "dependencies": {
+    "@axe-core/playwright": "4.10.2",
+    "@playwright/test": "1.62.1",
+    "chrome-launcher": "1.0.0",
+    "jscpd": "5.0.15",
+    "lighthouse": "13.4.1",
+    "node": "22.23.2",
+    "pixelmatch": "7.1.0",
+    "pngjs": "7.0.0"
+  }
+}

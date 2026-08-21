@@ -1,0 +1,109 @@
+{
+  "profiles": {
+    "static_website": {
+      "kind": "static",
+      "checks": {
+        "inventory": true,
+        "git": true,
+        "html": true,
+        "seo": true,
+        "structured_data": true,
+        "javascript": true,
+        "python": false,
+        "project_commands": true,
+        "dependencies": false,
+        "browser": true,
+        "lighthouse": true,
+        "duplication": true,
+        "live": true,
+        "website_essentials": true,
+        "automation": true,
+        "generator_contract": true,
+        "external_links": true
+      }
+    },
+    "flask_web_app": {
+      "kind": "flask",
+      "checks": {
+        "inventory": true,
+        "git": true,
+        "html": false,
+        "seo": false,
+        "structured_data": true,
+        "javascript": true,
+        "python": true,
+        "project_commands": true,
+        "dependencies": true,
+        "browser": true,
+        "lighthouse": false,
+        "duplication": true,
+        "live": false
+      }
+    },
+    "javascript_dashboard": {
+      "kind": "static",
+      "checks": {
+        "inventory": true,
+        "git": true,
+        "html": true,
+        "seo": true,
+        "structured_data": true,
+        "javascript": true,
+        "python": false,
+        "project_commands": true,
+        "dependencies": false,
+        "browser": true,
+        "lighthouse": true,
+        "duplication": true,
+        "live": true,
+        "website_essentials": true,
+        "automation": true,
+        "generator_contract": true,
+        "external_links": true
+      }
+    },
+    "python_automation": {
+      "kind": "python",
+      "checks": {
+        "inventory": true,
+        "git": true,
+        "html": false,
+        "seo": false,
+        "structured_data": true,
+        "javascript": false,
+        "python": true,
+        "project_commands": true,
+        "dependencies": true,
+        "browser": false,
+        "lighthouse": false,
+        "duplication": true,
+        "live": false
+      }
+    },
+    "documentation": {
+      "kind": "docs",
+      "checks": {
+        "inventory": true,
+        "git": true,
+        "html": false,
+        "seo": false,
+        "structured_data": true,
+        "javascript": false,
+        "python": false,
+        "project_commands": false,
+        "dependencies": false,
+        "browser": false,
+        "lighthouse": false,
+        "duplication": false,
+        "live": false
+      }
+    },
+    "custom": {
+      "kind": "docs",
+      "checks": {
+        "inventory": true,
+        "git": true
+      }
+    }
+  }
+}

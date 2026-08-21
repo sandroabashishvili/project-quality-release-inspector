@@ -1,0 +1,35 @@
+name: Quality System
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  self-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: python -m venv .venv
+      - run: .venv/bin/python -m pip install -r requirements.txt
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: node browser/verify-engines.mjs
+      - run: .venv/bin/python -m pytest -q -s
+      - run: node --test browser/tests/*.test.mjs
+      - name: Optional configured project scan
+        shell: bash
+        run: |
+          if [[ -f config/projects.ci.json ]]; then
+            .venv/bin/python -m quality_system --mode quick --offline --ci --config config/projects.ci.json
+          else
+            echo "No config/projects.ci.json; self-tests only."
+          fi
