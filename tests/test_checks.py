@@ -201,6 +201,16 @@ class QualitySystemTests(unittest.TestCase):
             with patch("quality_system.checks_operations._probe_url", side_effect=AssertionError("network used")):
                 self.assertEqual(check_external_links(project, offline=True, full=True), [])
 
+    def test_external_link_checker_treats_youtube_404_as_unverified(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "index.html").write_text('<a href="https://www.youtube.com/@Example">Channel</a>', encoding="utf-8")
+            project = Project("fixture", "Fixture", root, "static", live_url="https://example.test/", browser_paths=["/"])
+            with patch("quality_system.checks_operations._probe_url", return_value=("https://www.youtube.com/@Example", 404, "Not Found")):
+                findings = check_external_links(project, offline=False, full=True)
+            self.assertFalse(any(item.check == "external-links" and item.severity == "warning" for item in findings))
+            self.assertTrue(any(item.check == "external-links" and item.severity == "info" for item in findings))
+
     def test_complete_website_essentials_contract_passes(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

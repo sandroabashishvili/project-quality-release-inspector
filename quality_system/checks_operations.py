@@ -145,7 +145,7 @@ def _probe_url(url: str) -> tuple[str, int | None, str]:
             with urllib.request.urlopen(request, timeout=12) as response:  # nosec B310
                 return url, int(response.status), ""
         except urllib.error.HTTPError as exc:
-            if method == "HEAD" and exc.code in {400, 403, 405, 501}:
+            if method == "HEAD":
                 continue
             return url, exc.code, str(exc)
         except (urllib.error.URLError, TimeoutError, OSError) as exc:
@@ -163,8 +163,19 @@ def check_external_links(project: Project, *, offline: bool, full: bool) -> list
         return []
     with concurrent.futures.ThreadPoolExecutor(max_workers=min(8, len(urls))) as pool:
         results = list(pool.map(_probe_url, urls))
-    broken = [f"{url}: HTTP {status if status is not None else 'unreachable'} ({error})" for url, status, error in results if status in {404, 410} or status is None]
-    restricted = [f"{url}: HTTP {status}" for url, status, _ in results if status in {401, 403, 429}]
+    automation_blocking_hosts = {"youtube.com", "www.youtube.com", "linkedin.com", "www.linkedin.com"}
+    restricted = [
+        f"{url}: HTTP {status}"
+        for url, status, _ in results
+        if status in {401, 403, 429}
+        or (status == 404 and (urlparse(url).hostname or "").lower() in automation_blocking_hosts)
+    ]
+    restricted_urls = {item.split(": HTTP ", 1)[0] for item in restricted}
+    broken = [
+        f"{url}: HTTP {status if status is not None else 'unreachable'} ({error})"
+        for url, status, error in results
+        if (status in {404, 410} or status is None) and url not in restricted_urls
+    ]
     findings: list[Finding] = []
     if broken:
         findings.append(_finding(project.id, "external-links", "warning", f"{len(broken)} external link(s) are broken or unreachable", details="\n".join(broken)))

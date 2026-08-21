@@ -271,7 +271,7 @@ Generierte Reports, Screenshots, Scan-Historie, lokale Konfiguration, virtuelle 
 - Eine visuelle Änderung kann beabsichtigt sein und muss von einem Menschen bewertet werden.
 - Der Inspector nimmt bewusst keine automatischen Änderungen an geprüften Projekten vor.
 - Spezifische Login-/Startabläufe müssen konfiguriert oder über einen kleinen Adapter ergänzt werden.
-- Externe Websites können automatisierte Linkprüfungen mit 401, 403 oder 429 blockieren; das wird als nicht verifizierbarer Hinweis statt als bewiesener Defekt ausgewiesen.
+- Externe Plattformen wie YouTube oder LinkedIn können automatisierte Linkprüfungen mit 401, 403, 404 oder 429 blockieren; das wird für diese bekannten Plattformen als nicht verifizierbarer Hinweis statt als bewiesener Defekt ausgewiesen.
 
 ## Portfolio-Einordnung
 
