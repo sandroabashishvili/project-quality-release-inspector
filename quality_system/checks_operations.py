@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import concurrent.futures
+import ipaddress
 import json
 import re
 import subprocess
@@ -131,7 +132,13 @@ def _external_urls(project: Project) -> list[str]:
             parsed = urlparse(url)
             if parsed.scheme not in {"http", "https"} or parsed.hostname == own_host:
                 continue
-            if parsed.hostname in {"127.0.0.1", "localhost", "0.0.0.0", "::1"}:
+            host = parsed.hostname or ""
+            try:
+                address = ipaddress.ip_address(host)
+                local_address = address.is_loopback or address.is_unspecified
+            except ValueError:
+                local_address = host == "localhost"
+            if local_address:
                 continue
             urls.add(url.split("#", 1)[0])
     return sorted(urls)[: max(1, project.external_link_limit)]

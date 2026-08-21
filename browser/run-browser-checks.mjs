@@ -304,7 +304,9 @@ async function inspectPage(page, project, route, viewport) {
         add(project.id, "interaction", "pass", `${viewport.name}: mobile menu opens`, "", route);
       }
       await toggle.click().catch(() => {});
-      await page.waitForTimeout(80);
+      // Navigation panels commonly animate opacity/visibility for 200-250 ms.
+      // Evaluate the final closed state, not the middle of the CSS transition.
+      await page.waitForTimeout(320);
       const closedState = await toggle.getAttribute("aria-expanded");
       const closedVisible = targetId ? await page.locator(`#${targetId}`).isVisible().catch(() => false) : false;
       if (closedState !== "false" || closedVisible) {
