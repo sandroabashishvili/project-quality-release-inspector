@@ -7,6 +7,7 @@ import { chromium, firefox, webkit } from "@playwright/test";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { baselineDecision } from "./visual-policy.mjs";
+import { engineLaunchSeverity } from "./engine-policy.mjs";
 
 
 const inputPath = process.argv[2];
@@ -471,7 +472,15 @@ if (input.mode === "full") {
         }
       }
     } catch (error) {
-      add("quality-system", "cross-browser", "error", `${browserName} could not start`, error.stack || String(error));
+      const details = error.stack || String(error);
+      const severity = engineLaunchSeverity(details);
+      add(
+        "quality-system",
+        "cross-browser",
+        severity,
+        severity === "warning" ? `${browserName} is installed but its host libraries are missing` : `${browserName} could not start`,
+        details,
+      );
     } finally {
       if (smokeBrowser) await smokeBrowser.close();
     }
